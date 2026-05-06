@@ -2,12 +2,12 @@ import subprocess
 import os
 from pathlib import Path
 
-downloadpath = os.path.expanduser("~/Websites")
-mapfile = os.path.expanduser("~/Documents/cod/python/osmupdate/us-latest.osm.pbf")
+changefiles_downloadpath = os.path.expanduser("~/osmupdate/")
+mapfile = os.path.expanduser("~/osmupdate/us-latest.osm.pbf")
 geofabrikurl = "https://download.geofabrik.de/north-america/us-updates/"
 
 def dl_diff():
-    wget = ["wget", "-np", "-m", "-P", downloadpath, geofabrikurl]
+    wget = ["wget", "-np", "-m", "-P", changefiles_downloadpath, geofabrikurl]
     wg = subprocess.run(wget)
     if not wg.returncode:
         return True
@@ -16,7 +16,7 @@ def dl_diff():
 
 def applydiff():
     lastupd = os.path.getmtime(mapfile)
-    diff = [x for x in list(Path(downloadpath).rglob("*.osc.gz")) if x.stat().st_mtime > lastupd]
+    diff = [x for x in list(Path(changefiles_downloadpath).rglob("*.osc.gz")) if x.stat().st_mtime > lastupd]
 
     if not diff:
         subprocess.call("echo No new change files found > /dev/pts/0", shell=True)
